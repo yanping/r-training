@@ -1,0 +1,1 @@
+pandoc -H knitr_bootstrap.html intro2r_1.md -o intro2r_1.html

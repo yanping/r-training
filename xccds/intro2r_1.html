@@ -1,0 +1,456 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- jQuery -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+  
+  <!-- highlight.js -->
+  <link rel="stylesheet" href="http://yandex.st/highlightjs/7.3/styles/vs.min.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js"></script>
+  <script src="http://yandex.st/highlightjs/7.3/languages/r.min.js"></script>
+  
+  <!-- bootstrap -->
+  <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" id="style" media="screen">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+  
+  <!-- bootstrap-responsive -->
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" media="screen">
+  
+  <!-- tocify -->
+  <link rel="stylesheet" href="http://gregfranko.com/jquery.tocify.js/css/jquery.tocify.css">
+  <script src="http://gregfranko.com/jquery.tocify.js/js/jquery.tocify.min.js"></script>
+  
+  <!-- fancybox -->
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.js"></script>
+  
+  <script>
+  
+  /* run scripts when document is ready */
+  $(function() {
+  
+    /* size of thumbnails */
+    var thumbsize = "span4";
+  
+    /* included languages */
+    var languages = {};
+  
+    /* Add div wrapping class to code blocks without them */
+    $('pre code').each(function(){
+  
+      var block_type, code_type;
+      /* output block */
+      if($(this).hasClass('')){
+        block_type = "output";
+        code_type = "";
+      }
+      /* source code block */
+      else{
+        block_type = "source";
+        code_type = $(this).attr('class');
+      }
+      /* no wrapping div, not using render_html(), so add to wrap */
+      if($(this).closest('div').length < 1){
+        $(this).parent().wrap('<div class="' + [block_type, code_type].join(" ") + '"></div>');
+      }
+      /* just add code type to the parent div */
+      else{
+        $(this).closest('div').addClass(code_type);
+      }
+    });
+  
+    /* style tables, set them as output*/
+    $('table').addClass('table table-striped table-bordered table-hover table-condensed')
+      .wrap('<div class="output", style="overflow: auto"/>');
+  
+    /* find all code or output blocks which have a class and add toggle */
+    $('div.source, div.output').each(function() {
+      var button = $('<button class="btn-mini btn-link btn toggle " data-toggle="button">+/- </button>');
+  
+      /* code block */
+      if($(this).hasClass('source')){
+        var code_block = $(this).find('code');
+        var lang_type = code_block.attr('class');
+        button.text(button.text() + lang_type + ' Code');
+        button.addClass('source ' + lang_type);
+        languages[lang_type]=1;
+        code_block.each(function(i, e) {
+          hljs.highlightBlock(e);
+        });
+      }
+  
+      /* output block */
+      else {
+        button.text(button.text() + 'Output');
+        button.addClass('output active');
+      }
+      $(this).before(button);
+    });
+  
+    /* syntax highlight code blocks*/
+  
+    /* onclick toggle next code block */
+    $('.toggle').click(function() {
+      $(this).button('toggle');
+      $(this).next('div').slideToggle();
+      return false;
+    });
+  
+    /* give images a fancybox and thumbnail classes to allow lightbox and thumbnails TODO: make fancybox prev next if grouped */
+    $('p').each(function(){
+      $(this).find('img').unwrap().wrapAll('<div class="row-fluid"><div class="rimage thumbnails"></div></div>');
+    });
+    $('div.rimage').children('img').wrap('<a href="#", class="' + thumbsize + ' thumbnail"></a></li>').addClass('fancybox');
+  
+    /* fancybox */
+    $(".fancybox").each( function() {
+      var img = $(this);
+      $(this).fancybox({
+        beforeLoad: function(){
+          <!--img.removeClass('thumbnail');-->
+        },
+        afterClose: function(){
+          <!--img.addClass('thumbnail');-->
+          img.css('display', 'block');
+        },
+      });
+    });
+  
+    /* add bootstrap classes */
+    $('body').wrapInner('<div class="container-fluid"><div class="row-fluid"><div class="span9">');
+    $('.container-fluid >.row-fluid').prepend('<div class="span3"><div id="toc"></div></div>');
+  
+    create_language_links = function(){
+      var text='';
+      for(language in languages){
+        text += '<li><a href="#" class="source toggle_global btn-link btn" type="source.' + language + '">' + language + '</a></li>\n';
+      }
+      return text;
+    }
+  
+    /* add navbar */
+    $('.container-fluid').prepend(
+      '<div id="bottom-navbar" class="navbar-fixed-bottom navbar">\
+        <div class="navbar-inner">\
+          <div class="pull-right">\
+            <span class="navbar-text">Toggle</span>\
+            <div class="btn-group dropup" data-toggle="button-checkbox">\
+              <button type="source" class="toggle_global btn">Code</button>\
+              <button class="btn dropdown-toggle" data-toggle="dropdown">\
+                <span class="caret"></span>\
+              </button>\
+              <ul class="dropdown-menu pull-right">' 
+                + create_language_links() + 
+              '</div>\
+              <button type="output" class="toggle_global btn active">Output</button>\
+              <button type="thumbnails" class="toggle_global btn active">Plots</button>\
+            </div>\
+          </div>\
+        </div>\
+      </div>'
+    );
+  
+    /* global toggles FIXME explicitly toggle all on/off using global variables */
+    $('.toggle_global').click(function(){
+      $(this).button('toggle');
+      var type = $(this).attr('type');
+      $('.' + type).button('toggle');
+      $('div.' + type).slideToggle();
+      return false;
+    });
+  
+    /* toggle code blocks hidden by default */
+    $('div.source').toggle();
+  
+    /* add table of contents */
+    $('#toc').tocify({extendPage: false});
+  
+    /* if using render_html() hook, make functions links to custom R search */
+    /*search in ggplot documentation or inside-r.org */
+    $("span.functioncall").replaceWith(function(){
+  
+      return '<a target="_blank" href="http://www.google.com/search?sourceid=navclient&gfns=1&\
+  q=site:docs.ggplot2.org/current OR site:inside-r.org ' +
+      $(this).text() + '">' + $(this).text()+'</a>'
+    });
+  
+    /* add footer */
+    $('body').wrapInner('<div id="wrap" />');
+    $('body').append('<div id="push" />');
+    var p = $('p:contains("Author:")');
+    var last_p = p.filter(':last');
+    p.detach();
+    last_p.addClass('muted').attr('id','credit');
+    last_p.append('<p>styled with <a href="https://github.com/jimhester/knitr_bootstrap">knitr_bootstrap</a></p>');
+    last_p.appendTo("body");
+    last_p.wrap('<div id="footer"><div class="container" /></div>');
+  });
+  </script>
+  
+  <style type="text/css">
+  
+  /* Knitr_bootstrap styles
+  -------------------------------------------------- */
+  .container-fluid {
+    padding-left: 0 !important;
+  }
+  
+  .toggle{
+    text-transform: capitalize;
+  }
+  
+  .toggle_global{
+    text-transform: capitalize;
+  }
+  
+  .thumbnails { text-align:center; }
+  .thumbnails > .thumbnail { display: inline-block !important; float: none !important; }
+  
+  /* Sticky footer styles
+  -------------------------------------------------- */
+  * {
+    margin:0;
+  }
+  html,
+  body {
+      height: 100%;
+      /* The html and body elements cannot have any padding or margin. */
+  }
+  
+  /* Wrapper for page content to push down footer */
+  #wrap {
+      min-height: 100%;
+      height: auto !important;
+      height: 100%;
+      /* Negative indent footer by it's height */
+      margin: 0 auto -60px;
+  }
+  
+  /* Set the fixed height of the footer here */
+  #push,
+  #footer {
+      height: 60px;
+      padding-bottom: 60px;
+  }
+  
+  #footer {
+    text-align: center;
+  }
+  
+  /* Twitter Bootstrap Overrides */
+  /* -------------------------------------------------- */
+  .nav-list > li > a, .nav-list .nav-header {
+      margin: 0px !important;
+  }
+  .nav-list > li > a {
+      padding: 5px !important;
+  }
+  
+  /* Tocify */
+  /* -------------------------------------------------- */
+  
+  /* Display h2 headers */
+  .sub-header {
+    display: block;
+  }
+  
+  /* Hide the rest */
+  .sub-header .sub-header {
+    display: none;
+  }
+  
+   /* Indent h4 elements */
+  .sub-header .sub-header .sub-header .sub-header {
+    text-indent: 50px;
+  }
+  
+  </style>
+  
+  <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" id="style" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" id="style" title="default" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/amelia/bootstrap.min.css" title="amelia" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/cerulean/bootstrap.min.css" title="cerulean" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/cosmo/bootstrap.min.css" title="cosmo" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/cyborg/bootstrap.min.css" title="cyborg" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/journal/bootstrap.min.css" title="journal" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/readable/bootstrap.min.css" title="readable" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/simplex/bootstrap.min.css" title="simplex" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/slate/bootstrap.min.css" title="slate" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/spacelab/bootstrap.min.css" title="spacelab" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css" title="spruce" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/superhero/bootstrap.min.css" title="superhero" media="screen">
+  <link rel="alternate stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/united/bootstrap.min.css" title="united" media="screen">
+  
+  <script>
+  $(function() {
+      $('#bottom-navbar').find('.navbar-inner').append(
+      '<ul class="nav">\
+        <li class="dropdown">\
+          <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">Bootstrap Style</a>\
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">\
+            <li><a class="style-switch" id="default" href="#">default</a></li>\
+            <li><a class="style-switch" id="amelia" href="#">amelia</a></li>\
+            <li><a class="style-switch" id="cerulean" href="#">cerulean</a></li>\
+            <li><a class="style-switch" id="cosmo" href="#">cosmo</a></li>\
+            <li><a class="style-switch" id="cyborg" href="#">cyborg</a></li>\
+            <li><a class="style-switch" id="journal" href="#">journal</a></li>\
+            <li><a class="style-switch" id="readable" href="#">readable</a></li>\
+            <li><a class="style-switch" id="simplex" href="#">simplex</a></li>\
+            <li><a class="style-switch" id="slate" href="#">slate</a></li>\
+            <li><a class="style-switch" id="spacelab" href="#">spacelab</a></li>\
+            <li><a class="style-switch" id="spruce" href="#">spruce</a></li>\
+            <li><a class="style-switch" id="superhero" href="#">superhero</a></li>\
+            <li><a class="style-switch" id="united" href="#">united</a></li>\
+          </ul>\
+        </li>\
+      </ul>');
+      $('.style-switch').click(function(){
+        var css = $('link[title=' + $(this).attr('id') + ']');
+        $('#style[rel=stylesheet]').attr('href', css.attr('href'));
+        return false;
+      });
+    }
+  );
+  </script>
+  
+  <link id="code-style" rel="stylesheet" href="http://yandex.st/highlightjs/7.3/styles/vs.min.css">
+  <link rel="alternate stylesheet" title="Default" href="http://yandex.st/highlightjs/7.3/styles/default.min.css">
+  <link rel="alternate stylesheet" title="Dark" href="http://yandex.st/highlightjs/7.3/styles/dark.min.css">
+  <link rel="alternate stylesheet" title="FAR" href="http://yandex.st/highlightjs/7.3/styles/far.min.css">
+  <link rel="alternate stylesheet" title="IDEA" href="http://yandex.st/highlightjs/7.3/styles/idea.min.css">
+  <link rel="alternate stylesheet" title="Sunburst" href="http://yandex.st/highlightjs/7.3/styles/sunburst.min.css">
+  <link rel="alternate stylesheet" title="Zenburn" href="http://yandex.st/highlightjs/7.3/styles/zenburn.min.css">
+  <link rel="alternate stylesheet" title="Visual Studio" href="http://yandex.st/highlightjs/7.3/styles/vs.min.css">
+  <link rel="alternate stylesheet" title="Ascetic" href="http://yandex.st/highlightjs/7.3/styles/ascetic.min.css">
+  <link rel="alternate stylesheet" title="Magula" href="http://yandex.st/highlightjs/7.3/styles/magula.min.css">
+  <link rel="alternate stylesheet" title="GitHub" href="http://yandex.st/highlightjs/7.3/styles/github.min.css">
+  <link rel="alternate stylesheet" title="Google Code" href="http://yandex.st/highlightjs/7.3/styles/googlecode.min.css">
+  <link rel="alternate stylesheet" title="Brown Paper" href="http://yandex.st/highlightjs/7.3/styles/brown_paper.min.css">
+  <link rel="alternate stylesheet" title="School Book" href="http://yandex.st/highlightjs/7.3/styles/school_book.min.css">
+  <link rel="alternate stylesheet" title="IR Black" href="http://yandex.st/highlightjs/7.3/styles/ir_black.min.css">
+  <link rel="alternate stylesheet" title="Solarized - Dark" href="http://yandex.st/highlightjs/7.3/styles/solarized_dark.min.css">
+  <link rel="alternate stylesheet" title="Solarized - Light" href="http://yandex.st/highlightjs/7.3/styles/solarized_light.min.css">
+  <link rel="alternate stylesheet" title="Arta" href="http://yandex.st/highlightjs/7.3/styles/arta.min.css">
+  <link rel="alternate stylesheet" title="Monokai" href="http://yandex.st/highlightjs/7.3/styles/monokai.min.css">
+  <link rel="alternate stylesheet" title="XCode" href="http://yandex.st/highlightjs/7.3/styles/xcode.min.css">
+  <link rel="alternate stylesheet" title="Pojoaque" href="http://yandex.st/highlightjs/7.3/styles/pojoaque.min.css">
+  <link rel="alternate stylesheet" title="Rainbow" href="http://yandex.st/highlightjs/7.3/styles/rainbow.min.css">
+  <link rel="alternate stylesheet" title="Tomorrow" href="http://yandex.st/highlightjs/7.3/styles/tomorrow.min.css">
+  <link rel="alternate stylesheet" title="Tomorrow Night" href="http://yandex.st/highlightjs/7.3/styles/tomorrow-night.min.css">
+  <link rel="alternate stylesheet" title="Tomorrow Night Bright" href="http://yandex.st/highlightjs/7.3/styles/tomorrow-night-bright.min.css">
+  <link rel="alternate stylesheet" title="Tomorrow Night Blue" href="http://yandex.st/highlightjs/7.3/styles/tomorrow-night-blue.min.css">
+  <link rel="alternate stylesheet" title="Tomorrow Night Eighties" href="http://yandex.st/highlightjs/7.3/styles/tomorrow-night-eighties.min.css">
+  
+  <script>
+  $(function() {
+      $('#bottom-navbar').find('.navbar-inner').append(
+      '<ul class="nav">\
+        <li class="dropdown">\
+          <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">Code Style</a>\
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">\
+            <li><a class="code-style-switch" title="Default" href="#">Default</a></li>\
+            <li><a class="code-style-switch" title="Dark" href="#">Dark</a></li>\
+            <li><a class="code-style-switch" title="FAR" href="#">FAR</a></li>\
+            <li><a class="code-style-switch" title="IDEA" href="#">IDEA</a></li>\
+            <li><a class="code-style-switch" title="Sunburst" href="#">Sunburst</a></li>\
+            <li><a class="code-style-switch" title="Zenburn" href="#">Zenburn</a></li>\
+            <li><a class="code-style-switch" title="Visual Studio" href="#">Visual Studio</a></li>\
+            <li><a class="code-style-switch" title="Ascetic" href="#">Ascetic</a></li>\
+            <li><a class="code-style-switch" title="Magula" href="#">Magula</a></li>\
+            <li><a class="code-style-switch" title="GitHub" href="#">GitHub</a></li>\
+            <li><a class="code-style-switch" title="Google Code" href="#">Google Code</a></li>\
+            <li><a class="code-style-switch" title="Brown Paper" href="#">Brown Paper</a></li>\
+            <li><a class="code-style-switch" title="School Book" href="#">School Book</a></li>\
+            <li><a class="code-style-switch" title="IR Black" href="#">IR Black</a></li>\
+            <li><a class="code-style-switch" title="Solarized - Dark" href="#">Solarized - Dark</a></li>\
+            <li><a class="code-style-switch" title="Solarized - Light" href="#">Solarized - Light</a></li>\
+            <li><a class="code-style-switch" title="Arta" href="#">Arta</a></li>\
+            <li><a class="code-style-switch" title="Monokai" href="#">Monokai</a></li>\
+            <li><a class="code-style-switch" title="XCode" href="#">XCode</a></li>\
+            <li><a class="code-style-switch" title="Pojoaque" href="#">Pojoaque</a></li>\
+            <li><a class="code-style-switch" title="Rainbow" href="#">Rainbow</a></li>\
+            <li><a class="code-style-switch" title="Tomorrow" href="#">Tomorrow</a></li>\
+            <li><a class="code-style-switch" title="Tomorrow Night" href="#">Tomorrow Night</a></li>\
+            <li><a class="code-style-switch" title="Tomorrow Night Bright" href="#">Tomorrow Night Bright</a></li>\
+            <li><a class="code-style-switch" title="Tomorrow Night Blue" href="#">Tomorrow Night Blue</a></li>\
+            <li><a class="code-style-switch" title="Tomorrow Night Eighties" href="#">Tomorrow Night Eighties</a></li>\
+          </ul>\
+        </li>\
+      </ul>');
+      $('.code-style-switch').click(function(){
+        var css = $('link[title="' + $(this).attr('title') + '"]');
+        $('#code-style[rel=stylesheet]').attr('href', css.attr('href'));
+  
+        return false;
+      });
+  });
+  </script>
+</head>
+<body>
+<h1 id="r语言编程入门之一导论">R语言编程入门之一：导论</h1>
+<p>简单来讲，编程是借助计算机来解决某个问题。学习编程的就是训练我们解决问题的能力。有这样一种说法：在未来，不会编程的人即是文盲。</p>
+<h2 id="为什么要学习r编程">1 为什么要学习R编程</h2>
+<p>大部分情况下解决某些问题还需要依赖一些事实或数据，结合数据分析的框架和计算工具来帮助我们决策和判断。这时候R语言编程就会派上用场。例如从大的方面来看，投资方要决定在何处建立风力发电场，就需要采集天气数据加以建模分析，评估各项目方案。从小的方面来看，个人是否应该购买某个理财产品，你需要获取过去的市场信息，模拟未来可能的变化，计算该项资产未来的期望收益和标准差。所以说学习R编程就是学习在数据环境中解决问题，从中磨练技术、锻炼智力，还能得到满足的快感。</p>
+<ul>
+<li>学会R编程，才能理解高手的代码，并从中领会其用意并成为真正的高手。</li>
+<li>学会R编程，才能深入了解函数背后的理论，从而进一步解决从未有过的新问题。</li>
+</ul>
+<h2 id="如何学习r编程">2 如何学习R编程</h2>
+<ul>
+<li>读代码</li>
+<li>写代码</li>
+</ul>
+<p>编程无法在课堂或书本中学到，在游泳池里学游泳是最佳的方法，也是唯一的方法。<a href="http://learnpythonthehardway.org/">Learn Python The Hard Way</a>一书的作者Zed A. Shaw曾说过“The Hard Way Is Easier”。所以就算是按照教材重复打一遍代码，也会有相当的收获。此外还要按照规范来编写代码，养成良好的习惯，包括各种符号的用法和良好的注释。在注释里作笔记是也一个好的学习方法，很多时候你只需要将旧代码略作修改就可以用到其它地方。</p>
+<h2 id="学习r编程的资源">3 学习R编程的资源</h2>
+<ul>
+<li>书籍
+<ul>
+<li>S Programming</li>
+<li>The Art of R Programming</li>
+<li>A First Course in Statistical Programming with R</li>
+<li>software for data analysis programming with R</li>
+<li>Introduction to Scientific Programming and Simulation Using R</li>
+</ul></li>
+<li>论坛和博客
+<ul>
+<li>http://cos.name/cn/forum/15</li>
+<li>http://www.r-bloggers.com/</li>
+<li>http://www.statmethods.net/index.html</li>
+<li>http://zoonek2.free.fr/UNIX/48_R/all.html</li>
+<li>http://www.rdatamining.com/</li>
+<li>http://www.r-statistics.com/</li>
+<li>http://www.inside-r.org/</li>
+<li>http://r-ke.info/</li>
+<li>http://wiki.stdout.org/rcookbook/</li>
+</ul></li>
+</ul>
+<h2 id="如何获得帮助">4 如何获得帮助</h2>
+<p>R中的帮助文档非常有用，其中有四种类型的帮助</p>
+<ul>
+<li>help(functionname) 对已经加载包所含的函数显示其帮助文档，用?号也是一样的。</li>
+<li>help.search('keyword') 对已经安装的包搜索关键词，用??号功能一样。</li>
+<li>help(package='packagename') 显示已经安装的包的描述和函数说明</li>
+<li>RSiteSearch('keyword') 在官方网站上联网搜索</li>
+</ul>
+<h2 id="r语言的启动">5 R语言的启动</h2>
+<p>R语言启动后会首先查找有无.Rprofile文档，用户可通过编辑.Rprofile文档来自定义R启动环境，该文件可放在工作目录或安装目录中。</p>
+<p>之后R会查找在工作目录有无.RData文档，若有的话将自动加载恢复之前的工作内容。</p>
+<p>在R中所有的默认输入输出文件都会在工作目录中。getwd() 报告工作目录，setwd() 负责设置工作目录。在win窗口下也可以点击Change Working Directory来更改。</p>
+<p>Sys.getenv('R_HOME') 会报告R主程序安装目录</p>
+<p>?Startup可以得到更多关于R启动时的帮助</p>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="http://dongxi.net/b14rH">如何成为一名黑客</a></li>
+<li><a href="http://samizdat.mines.edu/howto/HowToBeAProgrammer.html">How to be a Programmer</a></li>
+<li><a href="http://norvig.com/21-days.html">Teach Yourself Programming in Ten Years</a></li>
+</ul>
+</body>
+</html>
