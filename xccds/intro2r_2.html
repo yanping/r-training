@@ -6,6 +6,25 @@
   <meta name="generator" content="pandoc" />
   <title></title>
   <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- jQuery -->
@@ -399,62 +418,40 @@
   </script>
 </head>
 <body>
-<h1 id="r语言编程入门之一导论">R语言编程入门之一：导论</h1>
-<p>简单来讲，编程是借助计算机来解决某个问题。学习编程的就是训练我们解决问题的能力。有这样一种说法：在未来，不会编程的人即是文盲。</p>
-<h2 id="为什么要学习r编程">1 为什么要学习R编程</h2>
-<p>大部分情况下解决某些问题还需要依赖一些事实或数据，结合数据分析的框架和计算工具来帮助我们决策和判断。这时候R语言编程就会派上用场。例如从大的方面来看，投资方要决定在何处建立风力发电场，就需要采集天气数据加以建模分析，评估各项目方案。从小的方面来看，个人是否应该购买某个理财产品，你需要获取过去的市场信息，模拟未来可能的变化，计算该项资产未来的期望收益和标准差。所以说学习R编程就是学习在数据环境中解决问题，从中磨练技术、锻炼智力，还能得到满足的快感。</p>
-<ul>
-<li>学会R编程，才能理解高手的代码，并从中领会其用意并成为真正的高手。</li>
-<li>学会R编程，才能深入了解函数背后的理论，从而进一步解决从未有过的新问题。</li>
-</ul>
-<h2 id="如何学习r编程">2 如何学习R编程</h2>
-<ul>
-<li>读代码</li>
-<li>写代码</li>
-</ul>
-<p>编程无法在课堂或书本中学到，在游泳池里学游泳是最佳的方法，也是唯一的方法。<a href="http://learnpythonthehardway.org/">Learn Python The Hard Way</a>一书的作者Zed A. Shaw曾说过“The Hard Way Is Easier”。所以就算是按照教材重复打一遍代码，也会有相当的收获。此外还要按照规范来编写代码，养成良好的习惯，包括各种符号的用法和良好的注释。在注释里作笔记是也一个好的学习方法，很多时候你只需要将旧代码略作修改就可以用到其它地方。</p>
-<h2 id="学习r编程的资源">3 学习R编程的资源</h2>
-<ul>
-<li>书籍
-<ul>
-<li>S Programming</li>
-<li>The Art of R Programming</li>
-<li>A First Course in Statistical Programming with R</li>
-<li>software for data analysis programming with R</li>
-<li>Introduction to Scientific Programming and Simulation Using R</li>
-</ul></li>
-<li>论坛和博客
-<ul>
-<li>http://cos.name/cn/forum/15</li>
-<li>http://www.r-bloggers.com/</li>
-<li>http://www.statmethods.net/index.html</li>
-<li>http://zoonek2.free.fr/UNIX/48_R/all.html</li>
-<li>http://www.rdatamining.com/</li>
-<li>http://www.r-statistics.com/</li>
-<li>http://www.inside-r.org/</li>
-<li>http://r-ke.info/</li>
-<li>http://wiki.stdout.org/rcookbook/</li>
-</ul></li>
-</ul>
-<h2 id="如何获得帮助">4 如何获得帮助</h2>
-<p>R中的帮助文档非常有用，其中有四种类型的帮助</p>
-<ul>
-<li>help(functionname) 对已经加载包所含的函数显示其帮助文档，用?号也是一样的。</li>
-<li>help.search('keyword') 对已经安装的包搜索关键词，用??号功能一样。</li>
-<li>help(package='packagename') 显示已经安装的包的描述和函数说明</li>
-<li>RSiteSearch('keyword') 在官方网站上联网搜索</li>
-</ul>
-<h2 id="r语言的启动">5 R语言的启动</h2>
-<p>R语言启动后会首先查找有无.Rprofile文档，用户可通过编辑.Rprofile文档来自定义R启动环境，该文件可放在工作目录或安装目录中。</p>
-<p>之后R会查找在工作目录有无.RData文档，若有的话将自动加载恢复之前的工作内容。</p>
-<p>在R中所有的默认输入输出文件都会在工作目录中。getwd() 报告工作目录，setwd() 负责设置工作目录。在win窗口下也可以点击Change Working Directory来更改。</p>
-<p>Sys.getenv('R_HOME') 会报告R主程序安装目录</p>
-<p>?Startup可以得到更多关于R启动时的帮助</p>
-<h2 id="参考资料">参考资料</h2>
-<ul>
-<li><a href="http://dongxi.net/b14rH">如何成为一名黑客</a></li>
-<li><a href="http://samizdat.mines.edu/howto/HowToBeAProgrammer.html">How to be a Programmer</a></li>
-<li><a href="http://norvig.com/21-days.html">Teach Yourself Programming in Ten Years</a></li>
-</ul>
+<h1 id="r语言基础入门之二数据导入和描述统计">R语言基础入门之二：数据导入和描述统计</h1>
+<h2 id="数据导入">1 数据导入</h2>
+<p>对初学者来讲，面对一片空白的命令行窗口，第一道真正的难关也许就是数据的导入。数据导入有很多途径，例如从网页抓取、公共数据源获得、文本文件导入。为了快速入门，建议初学者采取R语言协同Excel电子表格的方法。也就是先用较为熟悉的Excel读取和整理你要处理的数据，然后“粘贴”到R中。</p>
+<p>例如我们先从<a href="../files/iris.csv">这个地址</a>下载iris.csv演示数据，在Excel中打开，框选所有的样本然后“复制”。在R语言中输入如下命令：</p>
+<pre class="sourceCode r"><code class="sourceCode r">data=<span class="kw">read.table</span>(<span class="st">&#39;clipboard&#39;</span>,T)</code></pre>
+<p>这的里read.table是R读取外部数据的常用命令，T表示第一行是表头信息，整个数据存在名为data的变量中。另一种更方便的导入方法是利用Rstudio的功能，在workspace菜单选择“import dataset”也是一样的。</p>
+<h2 id="dataframe操作">2 Dataframe操作</h2>
+<p>在数据导入R语言后，会以数据框(dataframe)的形式储存。dataframe是一种R的数据格式，可以将它想象成类似统计表格，每一行都代表一个样本点，而每一列则代表了样本的不同属性或特征。初学者需要掌握的基本操作方法就是dataframe的编辑、抽取和运算。</p>
+<p>尽管建议初学者在Excel中就把数据处理好，但有时候还是需要在R中对数据进行编辑，下面的命令可以让你有机会修改数据并存入到新的变量newdata中：</p>
+<pre class="sourceCode r"><code class="sourceCode r">newdata=<span class="kw">edit</span>(data)</code></pre>
+<p>另一种情况就是我们可能只关注数据的一部分，例如从原数据中抽取第20到30号样本的Sepal.Width变量数据，因为Sepal.Width变量是第2个变量，所以此时键入下面的命令即可：</p>
+<pre class="sourceCode r"><code class="sourceCode r">newdata=data[<span class="dv">20</span>:<span class="dv">30</span>,<span class="dv">2</span>]</code></pre>
+<p>如果需要抽取所有数据的Sepal.Width变量，那么下面两个命令是等价的：</p>
+<pre class="sourceCode r"><code class="sourceCode r">newdata=data[,<span class="dv">2</span>]
+newdata=data$Sepal.Width</code></pre>
+<p>第三种情况是需要对数据进行一些运算，例如需要将所有样本的Sepal.Width变量都放大10倍，我们先将原数据进行一个复制，再用$符号来提取运算对象即可：</p>
+<pre class="sourceCode r"><code class="sourceCode r">newdata=data
+newdata$Sepal.Width=newdata$Sepal.Width*<span class="dv">10</span></code></pre>
+<h2 id="描述统计">3 描述统计</h2>
+<p>描述统计是一种从大量数据中压缩提取信息的工具，最常用的就是summary命令，运行summary(data)得到结果如下：对于数值变量计算了五个分位点和均值，对于分类变量则计算了频数。</p>
+<p>也可以单独计算Sepal.Width变量的平均值和标准差</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(data$Sepal.Width)
+<span class="kw">sd</span>(data$Sepal.Width)</code></pre>
+<p>计算分类数据Species变量的频数表和条形图</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(data$Species)
+<span class="kw">barplot</span>(<span class="kw">table</span>(data$Species))</code></pre>
+<p>对于一元数值数据，绘制直方图和箱线图观察其分布是常用的方法：</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(data$Sepal.Width)
+<span class="kw">boxplot</span>(data$Sepal.Width)</code></pre>
+<p>对于二元数值数据，则可以通过散点图来观察规律</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(data$Sepal.Width,Sepal.Length)</code></pre>
+<p>如果需要保存绘图结果，建议使用Rstudio中的plot菜单命令，选择save plot as image</p>
+<div class="figure">
+<img src="figure/save_plot.jpg" />
+</div>
 </body>
 </html>
