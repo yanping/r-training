@@ -6,6 +6,25 @@
   <meta name="generator" content="pandoc" />
   <title></title>
   <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- jQuery -->
@@ -406,62 +425,42 @@
   </style>
 </head>
 <body>
-<h1 id="r语言编程入门之一导论">R语言编程入门之一：导论</h1>
-<p>简单来讲，编程是借助计算机来解决某个问题。学习编程的就是训练我们解决问题的能力。有这样一种说法：在未来，不会编程的人即是文盲。</p>
-<h2 id="为什么要学习r编程">1 为什么要学习R编程</h2>
-<p>大部分情况下解决某些问题还需要依赖一些事实或数据，结合数据分析的框架和计算工具来帮助我们决策和判断。这时候R语言编程就会派上用场。例如从大的方面来看，投资方要决定在何处建立风力发电场，就需要采集天气数据加以建模分析，评估各项目方案。从小的方面来看，个人是否应该购买某个理财产品，你需要获取过去的市场信息，模拟未来可能的变化，计算该项资产未来的期望收益和标准差。所以说学习R编程就是学习在数据环境中解决问题，从中磨练技术、锻炼智力，还能得到满足的快感。</p>
+<h1 id="r语言基础入门之三常用统计函数运算">R语言基础入门之三：常用统计函数运算</h1>
+<p>在R语言中经常会用到函数，例如上节中讲到的求样本统计量就需要均值函数(mean)和标准差函数(sd)。对于二元数值数据还用到协方差(cov)，对于二元分类数据则可以用交叉联列表函数(table)。下文讲述在初级统计学中最常用到的三类函数。</p>
+<h2 id="一数据汇总函数">一、数据汇总函数</h2>
+<p>我们还是以R中自带的iris数据为例，输入head(iris)你可以获得数据的前6个样本及对应的5个变量。取出最后两列数据作为讲解的对象：Species表示花的种类，Petal.Width表示花瓣宽度</p>
+<pre class="sourceCode r"><code class="sourceCode r">data=iris[,<span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>)]</code></pre>
+<p>下一步我们想计算不同种类花瓣的平均宽度，可以使用tapply函数，在计算前先用attach命令将data这个数据框解包以方便直接操作其变量，而不需再用$符号。</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">attach</span>(data)
+<span class="kw">tapply</span>(<span class="dt">X=</span>Petal.Width,<span class="dt">INDEX=</span>Species,<span class="dt">FUN=</span>mean)</code></pre>
+<p>结果如下</p>
+<pre><code>setosa versicolor  virginica
+0.246      1.326      2.026 </code></pre>
+<p>和tapply类似的还有sapply函数，在进一步讲解前初学者还需搞清楚两种数据表现方式，即stack（堆叠数据）和unstack（非堆叠数据），上面的data就是一个堆叠数据，每一行表示一个样本。而非堆叠数据可以根据unstack函数转换而来</p>
+<pre class="sourceCode r"><code class="sourceCode r">data.unstack=<span class="kw">unstack</span>(data)
+<span class="kw">head</span>(data.unstack)</code></pre>
+<p>你应该明白这二者之间的区别了，如果要对非堆叠数据计算不同种类花瓣的平均宽度，可以利用如下函数。</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sapply</span>(data.unstack,<span class="dt">FUN=</span>mean)</code></pre>
+<p>结果是一样的，也就是说tapply对应于stack数据，而sapply对应于unstack数据</p>
+<h2 id="二概率计算函数">二、概率计算函数</h2>
+<p>如果给定一种概率分布，通常会有四类计算问题：</p>
 <ul>
-<li>学会R编程，才能理解高手的代码，并从中领会其用意并成为真正的高手。</li>
-<li>学会R编程，才能深入了解函数背后的理论，从而进一步解决从未有过的新问题。</li>
+<li>计算其概率密度density （d）</li>
+<li>计算其概率分布probability（p）</li>
+<li>计算其百分位数quantile （q）</li>
+<li>随机数模拟random （r）</li>
 </ul>
-<h2 id="如何学习r编程">2 如何学习R编程</h2>
-<ul>
-<li>读代码</li>
-<li>写代码</li>
-</ul>
-<p>编程无法在课堂或书本中学到，在游泳池里学游泳是最佳的方法，也是唯一的方法。<a href="http://learnpythonthehardway.org/">Learn Python The Hard Way</a>一书的作者Zed A. Shaw曾说过“The Hard Way Is Easier”。所以就算是按照教材重复打一遍代码，也会有相当的收获。此外还要按照规范来编写代码，养成良好的习惯，包括各种符号的用法和良好的注释。在注释里作笔记是也一个好的学习方法，很多时候你只需要将旧代码略作修改就可以用到其它地方。</p>
-<h2 id="学习r编程的资源">3 学习R编程的资源</h2>
-<ul>
-<li>书籍
-<ul>
-<li>S Programming</li>
-<li>The Art of R Programming</li>
-<li>A First Course in Statistical Programming with R</li>
-<li>software for data analysis programming with R</li>
-<li>Introduction to Scientific Programming and Simulation Using R</li>
-</ul></li>
-<li>论坛和博客
-<ul>
-<li>http://cos.name/cn/forum/15</li>
-<li>http://www.r-bloggers.com/</li>
-<li>http://www.statmethods.net/index.html</li>
-<li>http://zoonek2.free.fr/UNIX/48_R/all.html</li>
-<li>http://www.rdatamining.com/</li>
-<li>http://www.r-statistics.com/</li>
-<li>http://www.inside-r.org/</li>
-<li>http://r-ke.info/</li>
-<li>http://wiki.stdout.org/rcookbook/</li>
-</ul></li>
-</ul>
-<h2 id="如何获得帮助">4 如何获得帮助</h2>
-<p>R中的帮助文档非常有用，其中有四种类型的帮助</p>
-<ul>
-<li>help(functionname) 对已经加载包所含的函数显示其帮助文档，用?号也是一样的。</li>
-<li>help.search('keyword') 对已经安装的包搜索关键词，用??号功能一样。</li>
-<li>help(package='packagename') 显示已经安装的包的描述和函数说明</li>
-<li>RSiteSearch('keyword') 在官方网站上联网搜索</li>
-</ul>
-<h2 id="r语言的启动">5 R语言的启动</h2>
-<p>R语言启动后会首先查找有无.Rprofile文档，用户可通过编辑.Rprofile文档来自定义R启动环境，该文件可放在工作目录或安装目录中。</p>
-<p>之后R会查找在工作目录有无.RData文档，若有的话将自动加载恢复之前的工作内容。</p>
-<p>在R中所有的默认输入输出文件都会在工作目录中。getwd() 报告工作目录，setwd() 负责设置工作目录。在win窗口下也可以点击Change Working Directory来更改。</p>
-<p>Sys.getenv('R_HOME') 会报告R主程序安装目录</p>
-<p>?Startup可以得到更多关于R启动时的帮助</p>
-<h2 id="参考资料">参考资料</h2>
-<ul>
-<li><a href="http://dongxi.net/b14rH">如何成为一名黑客</a></li>
-<li><a href="http://samizdat.mines.edu/howto/HowToBeAProgrammer.html">How to be a Programmer</a></li>
-<li><a href="http://norvig.com/21-days.html">Teach Yourself Programming in Ten Years</a></li>
-</ul>
+<p>记住上面四类计算对应的英文首字母，再对照下表就很容易计算各种概率问题了。</p>
+<div class="figure">
+<img src="figure/dist.jpg" />
+</div>
+<p>举例来讲，我们求标准正态分布曲线下小于1的面积p(x&lt;1)，正态分布是norm，而分布函数是p，那么使用pnorm(1)就得出了结果0.84；若计算扔10次硬币实验中有3次正面向上的概率，类似的dbinom(x=3,size=10,prob=0.5)得出0.11</p>
+<h2 id="三抽样函数">三、抽样函数</h2>
+<p>我们想从1到10中随机抽取5个数字，那么这样来做：首先产生一个序列，然后用sample函数进行无放回抽取。</p>
+<pre class="sourceCode r"><code class="sourceCode r">x=<span class="dv">1</span>:<span class="dv">10</span>
+<span class="kw">sample</span>(x,<span class="dt">size=</span><span class="dv">5</span>)</code></pre>
+<p>有放回抽取则是</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sample</span>(x,<span class="dt">size=</span><span class="dv">5</span>,<span class="dt">replace=</span>T)</code></pre>
+<p>sample函数在建模中经常用来对样本数据进行随机的划分，一部分作为训练数据，另一部分作为检验数据。</p>
 </body>
 </html>
