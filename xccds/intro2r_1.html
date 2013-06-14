@@ -30,7 +30,7 @@
   
   <!-- fancybox -->
   <link rel="stylesheet" href="../libs/css/jquery.fancybox.css">
-  <script src="libs/js/jquery.fancybox.js"></script>
+  <script src="../libs/js/jquery.fancybox.js"></script>
   
   <script>
   
@@ -405,6 +405,38 @@
   a.code-style-switch{font-size: 14px}
   
   </style>
+  
+  <!-- mathjax config similar to math.stackexchange -->
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        	inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      	displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      }
+    });
+  </script>
+  
+  
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+  </script>
+  
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+          var all = MathJax.Hub.getAllJax(), i;
+          for(i=0; i < all.length; i += 1) {
+              all[i].SourceElement().parentNode.className += ' has-jax';
+          }
+      });
+  </script>
+  
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </head>
 <body>
 <h1 id="r语言编程入门之一导论">R语言编程入门之一：导论</h1>
